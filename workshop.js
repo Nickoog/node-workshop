@@ -40,17 +40,34 @@ function getCurrentTemperatureAtPosition(position) {
 }
 
 function getCurrentTemperature(address) {
-    return getCurrentTemperatureAtPosition(getAddressPosition(address));
+    return getAddressPosition(address)
+        .then(getCurrentTemperatureAtPosition);
 
 }
 
 function getDistanceFromIss(address) {
+**********************************************************
+var addressPositionPromise = getAddressPosition(address);
+var issPositionPromise = getIssPosition();
+    return Promise.all([addressPositionPromise, issPositionPromise])
+
     return Promise.all([getAddressPosition(address), getIssPosition()])
         .then(function(position) {
             return getDistance(position[0], position[1]);
         });
 }
-
+ *********************************************************
+   var addressPosition;
+   
+   return getAddressPosition(address)
+        .then(function(addPos){
+            addressPosition = addPos;
+            return getIssPosition();
+        })
+        .then(function(issPos){
+            return getDistance(issPos, addressPosition);
+        })
+    }
 exports.getIssPosition = getIssPosition;
 exports.getAddressPosition = getAddressPosition;
 exports.getCurrentTemperatureAtPosition = getCurrentTemperatureAtPosition;
